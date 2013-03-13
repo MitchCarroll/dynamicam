@@ -1,0 +1,8 @@
+a program that dynamically creates a digital camoflage pattern based on a 
+basic perlin noise fractal process. the user defines the desired size, 
+number of colors, the hexidecimal value for the desired colors, and the 
+number of 'layers' and the dimensions of each layer in the pattern.
+the end result is a customized camoflage pattern that is composed of blocks of
+color, each of which is composed of smaller blocks of color, and so forth.
+the color transitions smoothly from block to block, and the resulting pattern
+is tilable.
