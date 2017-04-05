@@ -6,3 +6,10 @@ the end result is a customized camoflage pattern that is composed of blocks of
 color, each of which is composed of smaller blocks of color, and so forth.
 the color transitions smoothly from block to block, and the resulting pattern
 is tilable.
+
+TODO:
+Add better command line parsing
+Add better color gradient generation
+Add better image outputs (e.g.: JPG, PNG, etc.)
+Incorporate default power-of-two layers implicitly.
+Add some image analysis tools to extract an optimal color pallet and spacial frequencies per color (probably Fourier Transform).
