@@ -53,7 +53,7 @@ int main(int argc, char **argv)
   int ***layers; //the container for all the layers
   int **image; //final image array
 
-  if(argc>=2) 
+  if(argc >= 2) 
     infile.open(argv[1]); //FIXME: use command line parsing, e.g. -in=
   else {
     cout << "no input file given" << endl
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
   for(int a=0;a<argc;a++)
     cout << argv[a] << endl;
   cout << "opening outfile\n";
-  if(argc>=2)
+  if(argc >= 3)
     outfile.open(argv[2]); //FIXME: use command line parsing, e.g. --out=
   else {
     cout << "no output file given" << endl
