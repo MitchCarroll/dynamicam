@@ -1,0 +1,7 @@
+dynamicamo
+*.o
+*.a
+*.exe
+*.EXE
+*.dll
+*.DLL
