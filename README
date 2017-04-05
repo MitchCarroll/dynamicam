@@ -13,3 +13,4 @@ Add better color gradient generation
 Add better image outputs (e.g.: JPG, PNG, etc.)
 Incorporate default power-of-two layers implicitly.
 Add some image analysis tools to extract an optimal color pallet and spacial frequencies per color (probably Fourier Transform).
+Better input file format with comment rejection, and tagged data fields. Probably a version number too.
