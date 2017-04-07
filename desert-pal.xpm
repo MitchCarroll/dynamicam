@@ -1,9 +1,0 @@
-/* XPM */
-static char * desert_pal_xpm[] = {
-"4 1 5 1",
-" 	c None",
-".	c #7E7151",
-"+	c #8A8162",
-"@	c #B4AC87",
-"#	c #AD9E81",
-".+@#"};
