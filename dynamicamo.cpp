@@ -8,12 +8,14 @@ dynamically creates a digital camoflage pattern in XPM format
 based on a text input file containing the necessary parameters:
   Number of layers
   Dimensions of each layer
-  number of colors
-  rgb values for each color
-  format as follows:
+  Number of colors
+  Random seed
+  RGB values for each color
+  Format as follows:
 
   SIZE_X SIZE_Y
   LAYERS COLORS
+  SEED
   L1X L1Y
   L2X L2Y
   L3X L4Y
@@ -53,6 +55,8 @@ int main(int argc, char **argv)
   int ***layers; //the container for all the layers
   int **image; //final image array
 
+  int seed;
+
   if(argc >= 2) 
     infile.open(argv[1]); //FIXME: use command line parsing, e.g. -in=
   else {
@@ -65,6 +69,7 @@ int main(int argc, char **argv)
   infile >> size_y;
   infile >> num_layers; //read number of layers
   infile >> num_colors; //read number of colors
+  infile >> seed;
   layers = new int**[num_layers]; //initialize the first dimension
   dimensions = new int*[num_layers];
   for(int l=0;l<num_layers;l++)
@@ -83,6 +88,7 @@ int main(int argc, char **argv)
 
   //sort colors by value
   
+  srandom(seed);  
 
   for(int l=0;l<num_layers;l++) 
     for(int x=0;x<dimensions[l][0];x++)

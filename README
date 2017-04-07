@@ -10,7 +10,9 @@ is tilable.
 TODO:
 Add better command line parsing
 Add better color gradient generation
+    Color output should be a gradient of colors including solids, and dithers
 Add better image outputs (e.g.: JPG, PNG, etc.)
 Incorporate default power-of-two layers implicitly.
-Add some image analysis tools to extract an optimal color pallet and spacial frequencies per color (probably Fourier Transform).
+Add some image analysis tools to extract an optimal color pallet and spatial frequencies per color (probably Fourier Transform).
+Use a better type of fractal that incorporates given spatial frequencies.
 Better input file format with comment rejection, and tagged data fields. Probably a version number too.
