@@ -5,3 +5,4 @@ dynamicamo
 *.EXE
 *.dll
 *.DLL
+*.orig
