@@ -48,6 +48,21 @@ const string pal[]={
 
 int main(int argc, char **argv)
 {
+  if(argc <= 1) {
+      cout << "please provide an input file in the following format:" << endl
+           << "SIZE_X SIZE_Y" << endl
+           << "LAYERS COLORS" << endl
+           << "SEED" << endl
+           << "L1X L1Y" << endl
+           << "L2X L2Y" << endl
+           << "L3X L4Y" << endl
+           << "... ..." << endl
+           << "RRGGBB" << endl
+           << "RRGGBB" << endl
+           << "RRGGBB" << endl
+           << "......" << endl
+           << endl << "output is in XPM format" << endl;
+  }
   ifstream infile; //the input file stream
   ofstream outfile;//the file our program will generate;
   int size_x, size_y, num_colors, num_layers; //the number of colors and 
