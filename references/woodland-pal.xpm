@@ -1,0 +1,9 @@
+/* XPM */
+static char * woodland_pal_xpm[] = {
+"4 1 5 1",
+" 	c None",
+".	c #AFC477",
+"+	c #898266",
+"@	c #1D2615",
+"#	c #2B1E15",
+".+@#"};

@@ -41,7 +41,10 @@ const string pal[]={
   "M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","`","~",
   ",","<",".",">","/","?",";",":","'","\"","!","@","#","$","%","^",
   "&","*","(",")","-","_","=","+","[","{","]","}","\\","|"};
-//FIXME: load palette from file. Maybe not?
+//FIXME: load palette from file. Maybe not? This way, it should be baked into
+//       the binary, so it's probably just about optimal, unless we are going
+//       for a small memory footprint, though this is pretty dang small to begin
+//       with...
 
 int main(int argc, char **argv)
 {
@@ -69,7 +72,7 @@ int main(int argc, char **argv)
   infile >> size_y;
   infile >> num_layers; //read number of layers
   infile >> num_colors; //read number of colors
-  infile >> seed;
+  infile >> seed; //read the random seed
   layers = new int**[num_layers]; //initialize the first dimension
   dimensions = new int*[num_layers];
   for(int l=0;l<num_layers;l++)
@@ -127,7 +130,7 @@ int main(int argc, char **argv)
 
   //Initialize file header
   outfile << "/* XPM */" << endl
-	  << "static char * ref1_xpm[] = {" << endl
+	  << "static char * camo_xpm[] = {" << endl
 	  << "\"" << size_x << " " << size_y << " " 
 	  << num_colors << " 1\"," << endl;
   for(int c=0;c<num_colors;c++)
