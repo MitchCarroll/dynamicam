@@ -26,7 +26,9 @@ based on a text input file containing the necessary parameters:
   ......
 
 */
+fn main()
+{
+    let size_x: i16;
 
-let size_x: i16;
-
-size_x = 42;
+    size_x = 42;
+}
