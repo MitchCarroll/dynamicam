@@ -6,3 +6,6 @@ dynamicamo
 *.dll
 *.DLL
 *.orig
+target/
+**/*.rs.bk
+Cargo.lock
