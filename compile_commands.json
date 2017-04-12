@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/mowgli/projects/dynamicam",
-  "command": "/usr/bin/c++     -g   -o CMakeFiles/dynamicamo.dir/src/dynamicamo.cpp.o -c /home/mowgli/projects/dynamicam/src/dynamicamo.cpp",
-  "file": "/home/mowgli/projects/dynamicam/src/dynamicamo.cpp"
-}
-]

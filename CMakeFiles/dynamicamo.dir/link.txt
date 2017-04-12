@@ -1,1 +1,0 @@
-/usr/bin/c++   -g   CMakeFiles/dynamicamo.dir/src/dynamicamo.cpp.o  -o dynamicamo -rdynamic 

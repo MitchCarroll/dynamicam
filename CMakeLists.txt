@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 2.8.11)
-set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-project(dynamicamo)
-add_executable(dynamicamo src/dynamicamo.cpp)

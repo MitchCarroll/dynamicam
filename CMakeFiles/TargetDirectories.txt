@@ -1,3 +1,0 @@
-/home/mowgli/projects/dynamicam/CMakeFiles/rebuild_cache.dir
-/home/mowgli/projects/dynamicam/CMakeFiles/edit_cache.dir
-/home/mowgli/projects/dynamicam/CMakeFiles/dynamicamo.dir
