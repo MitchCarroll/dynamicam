@@ -30,7 +30,13 @@ extern crate rand;
 use std::env;
 use std::io::prelude::*;
 use std::fs::File;
+use std::str::SplitWhitespace;
 //use rand::{Rng, SeedableRng, StdRng};
+
+struct Dimension {
+    x: i16,
+    y: i16,
+}
 
 fn main()
 {
@@ -40,6 +46,7 @@ fn main()
     }
     
     check_args(&args);
+
     let mut infile = match File::open(&args[1]){
         Ok(file) => file,
         Err(why) => panic!(why),
@@ -58,6 +65,16 @@ fn main()
     println!("Output size: {}X{}",size_x,size_y);
     println!("{} Layers, {} Colors",num_layers,num_colors);
     println!("Random Seed: {}",seed);
+
+    let mut layer_dimensions = vec![];
+    for i in 0..num_layers {
+        layer_dimensions.push(read_layer_dimension(&mut split));
+    }
+    
+    for i in layer_dimensions {
+        println!("{}, {}", i.x, i.y);
+    }
+
 }
 
 fn check_args(args: &Vec<String>)
@@ -80,4 +97,9 @@ fn check_args(args: &Vec<String>)
         println!("USAGE: dynamicam <infile> <outfile>");
         std::process::exit(1);
     }
+}
+
+fn read_layer_dimension(split: &mut SplitWhitespace) -> Dimension
+{
+    Dimension{x: split.next().unwrap().parse().unwrap(), y: split.next().unwrap().parse().unwrap()}
 }
