@@ -28,20 +28,19 @@ based on a text input file containing the necessary parameters:
 */
 extern crate rand;
 use std::env;
-use std::io;
 use std::io::prelude::*;
 use std::fs::File;
-//use std::io::prelude::*;
-//use std::path::Path;
-//use std::error::Error;
 //use rand::{Rng, SeedableRng, StdRng};
 
 fn main()
 {
-    let mut args: env::Args = env::args();
+    let mut args = vec![];
+    for (_,a) in env::args().enumerate() {
+        args.push(a);
+    }
+    
     check_args(&args);
-
-    let mut infile = match File::open(args.nth(1).unwrap_or_default()) {
+    let mut infile = match File::open(&args[1]){
         Ok(file) => file,
         Err(why) => panic!(why),
     };
@@ -49,20 +48,19 @@ fn main()
 
     infile.read_to_string(&mut in_data);
     let mut split = in_data.split_whitespace();
-    let size_x: i16 = split.next().unwrap().to_string().parse().unwrap();
-    let size_y: i16 = split.next().unwrap().to_string().parse().unwrap();
-    let num_layers: i8 = split.next().unwrap().to_string().parse().unwrap();
-    let num_colors: i8 = split.next().unwrap().to_string().parse().unwrap();
-    let seed: i64 = split.next().unwrap().to_string().parse().unwrap();
+    let size_x: u16 = split.next().unwrap().to_string().parse().unwrap();
+    let size_y: u16 = split.next().unwrap().to_string().parse().unwrap();
+    let num_layers: u8 = split.next().unwrap().to_string().parse().unwrap();
+    let num_colors: u8 = split.next().unwrap().to_string().parse().unwrap();
+    let seed: u64 = split.next().unwrap().to_string().parse().unwrap();
 
-    
-    println!("{},{}",size_x,size_y);
-    println!("{},{}",num_layers,num_colors);
-    println!("{}",seed);
-
+    println!("Input file: {}",&args[1]); 
+    println!("Output size: {}X{}",size_x,size_y);
+    println!("{} Layers, {} Colors",num_layers,num_colors);
+    println!("Random Seed: {}",seed);
 }
 
-fn check_args(args: &env::Args)
+fn check_args(args: &Vec<String>)
 {
     if args.len() < 3 {
         println!("please provide an input file in the following format:");
@@ -79,7 +77,7 @@ fn check_args(args: &env::Args)
         println!("......" );
         println!();
         println!("output is in XPM format" );
-        println!("USAGE: dynamicamo <infile> <outfile>");
+        println!("USAGE: dynamicam <infile> <outfile>");
         std::process::exit(1);
     }
 }
