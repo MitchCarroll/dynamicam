@@ -71,10 +71,12 @@ fn main()
         layer_dimensions.push(read_layer_dimension(&mut split));
     }
     
-    for i in layer_dimensions {
-        println!("{}, {}", i.x, i.y);
+    let mut colors = vec![];
+    for i in 0..num_colors {
+        colors.push(split.next().unwrap());
     }
 
+    
 }
 
 fn check_args(args: &Vec<String>)
