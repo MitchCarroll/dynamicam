@@ -75,9 +75,6 @@ impl Layer {
 
 fn main()
 {
-    let mut l = Layer::new(2,2);
-    l.set(0,0,1);
-    println!("{}",l.get(0,0));
     let mut args = vec![];
     for (_,a) in env::args().enumerate() {
         args.push(a);
@@ -85,7 +82,6 @@ fn main()
     
     check_args(&args);
 
-//    let mut infile = File::open(&args[1]).ok().unwrap();
     let mut infile = match File::open(&args[1]){
         Ok(file) => file,
         Err(why) => panic!("File not found: {} - {}",&args[1],why),
@@ -118,7 +114,10 @@ fn main()
         colors.push(split.next().unwrap());
     }
 
-    
+    let mut layers = vec![];
+    for i in 0..num_layers as usize {
+        layers.push(Layer::new(layer_dimensions[i].x, layer_dimensions[i].y));
+    }
 }
 
 fn check_args(args: &Vec<String>)
