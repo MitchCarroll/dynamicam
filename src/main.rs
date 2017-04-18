@@ -38,6 +38,11 @@ struct Dimension {
     y: i16,
 }
 
+struct Layer {
+    size: Dimension,
+    data: Vec<u8>
+}
+
 fn main()
 {
     let mut args = vec![];
@@ -47,32 +52,36 @@ fn main()
     
     check_args(&args);
 
+//    let mut infile = File::open(&args[1]).ok().unwrap();
     let mut infile = match File::open(&args[1]){
         Ok(file) => file,
-        Err(why) => panic!(why),
+        Err(why) => panic!("File not found: {} - {}",&args[1],why),
     };
     let mut in_data = String::new();
 
-    infile.read_to_string(&mut in_data);
+    let _ = infile.read_to_string(&mut in_data);
     let mut split = in_data.split_whitespace();
-    let size_x: u16 = split.next().unwrap().to_string().parse().unwrap();
-    let size_y: u16 = split.next().unwrap().to_string().parse().unwrap();
+    let output_size = Dimension {
+                        x: split.next().unwrap().to_string().parse().unwrap(),
+                        y: split.next().unwrap().to_string().parse().unwrap(),
+    };
     let num_layers: u8 = split.next().unwrap().to_string().parse().unwrap();
     let num_colors: u8 = split.next().unwrap().to_string().parse().unwrap();
     let seed: u64 = split.next().unwrap().to_string().parse().unwrap();
 
-    println!("Input file: {}",&args[1]); 
-    println!("Output size: {}X{}",size_x,size_y);
+    println!("Input file: {}", &args[1]);
+    println!("Output file: {}", &args[2]);
+    println!("Output size: {}X{}",output_size.x,output_size.y);
     println!("{} Layers, {} Colors",num_layers,num_colors);
     println!("Random Seed: {}",seed);
 
     let mut layer_dimensions = vec![];
-    for i in 0..num_layers {
+    for _ in 0..num_layers {
         layer_dimensions.push(read_layer_dimension(&mut split));
     }
     
     let mut colors = vec![];
-    for i in 0..num_colors {
+    for _ in 0..num_colors {
         colors.push(split.next().unwrap());
     }
 
@@ -103,5 +112,8 @@ fn check_args(args: &Vec<String>)
 
 fn read_layer_dimension(split: &mut SplitWhitespace) -> Dimension
 {
-    Dimension{x: split.next().unwrap().parse().unwrap(), y: split.next().unwrap().parse().unwrap()}
+    Dimension{
+        x: split.next().unwrap().parse().unwrap(), 
+        y: split.next().unwrap().parse().unwrap()
+    }
 }
