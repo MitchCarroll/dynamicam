@@ -34,17 +34,50 @@ use std::str::SplitWhitespace;
 //use rand::{Rng, SeedableRng, StdRng};
 
 struct Dimension {
-    x: i16,
-    y: i16,
+    x: u16,
+    y: u16,
 }
 
 struct Layer {
     size: Dimension,
-    data: Vec<u8>
+    data: Vec<u8>,
+}
+
+impl Layer {
+    fn checkindex(&self, x: u16, y: u16) {
+        if !( x < self.size.x && y < self.size.y ) {
+            panic!("Layer coordinate out of bounds ({}, {})",x,y);
+        }
+    }
+
+    fn get(&self, x: u16, y: u16) -> u8 {
+        &self.checkindex(x,y);
+
+        self.data[ (y * self.size.x + x) as usize ]
+    }
+
+    fn set(&mut self, x: u16, y: u16, val: u8) {
+        self.checkindex(x,y);
+        
+        self.data[ (y * self.size.x + x) as usize ] = val;
+    }
+
+    fn new(x: u16, y: u16) -> Layer {
+        Layer {
+            size: Dimension {
+                x: x,
+                y: y
+            },
+            data: vec![0u8;(x*y) as usize]
+        }
+    }
 }
 
 fn main()
 {
+    let mut l = Layer::new(2,2);
+    l.set(0,0,1);
+    println!("{}",l.get(0,0));
     let mut args = vec![];
     for (_,a) in env::args().enumerate() {
         args.push(a);
