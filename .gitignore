@@ -6,3 +6,6 @@ dynamicamo
 *.dll
 *.DLL
 *.orig
+.*.swp
+*~
+*#
