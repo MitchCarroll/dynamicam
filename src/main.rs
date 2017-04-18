@@ -31,7 +31,7 @@ use std::env;
 use std::io::prelude::*;
 use std::fs::File;
 use std::str::SplitWhitespace;
-//use rand::{Rng, SeedableRng, StdRng};
+use rand::{Rng, StdRng, SeedableRng};
 
 struct Dimension {
     x: u16,
@@ -96,13 +96,15 @@ fn main()
     };
     let num_layers: u8 = split.next().unwrap().to_string().parse().unwrap();
     let num_colors: u8 = split.next().unwrap().to_string().parse().unwrap();
-    let seed: u64 = split.next().unwrap().to_string().parse().unwrap();
+    let seed: &[_] = &[split.next().unwrap().to_string().parse().unwrap()];
 
+    let mut rng: StdRng = SeedableRng::from_seed(seed);
+    
     println!("Input file: {}", &args[1]);
     println!("Output file: {}", &args[2]);
     println!("Output size: {}X{}",output_size.x,output_size.y);
     println!("{} Layers, {} Colors",num_layers,num_colors);
-    println!("Random Seed: {}",seed);
+    println!("Random Seed: {}",seed[0]);
 
     let mut layer_dimensions = vec![];
     for _ in 0..num_layers {
@@ -117,7 +119,15 @@ fn main()
     let mut layers = vec![];
     for i in 0..num_layers as usize {
         layers.push(Layer::new(layer_dimensions[i].x, layer_dimensions[i].y));
+        for a in 0..layers[i].size.x {
+            for b in 0..layers[i].size.y {
+                layers[i].set(a,b,(rng.next_u32() % num_colors as u32) as u8);
+            }
+        }
     }
+
+    let mut output_image = Layer::new(output_size.x, output_size.y);
+
 }
 
 fn check_args(args: &Vec<String>)
