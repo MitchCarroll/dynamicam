@@ -121,7 +121,7 @@ fn main()
         layers.push(Layer::new(layer_dimensions[i].x, layer_dimensions[i].y));
         for y in 0 .. layers[i].size.y {
             for x in 0 .. layers[i].size.x {
-                layers[i].set(x, y, (rng.next_u32() % num_colors as u32) as u8);
+                layers[i].set(x, y, (rng.next_u32() % (num_colors as u32)) as u8);
             }
         }
     }
@@ -130,14 +130,14 @@ fn main()
 
     for layer in layers {
         let scale = Dimension {
-            x: layer.size.x / output_size.x,
-            y: layer.size.y / output_size.y
+            x: output_size.x / layer.size.x,
+            y: output_size.y / layer.size.y
         };
         
         for y in 0 .. output_size.y {
             for x in 0..output_size.x {
                 let c = output_image.get(x,y);
-                output_image.set(x, y, c + layer.get(x * scale.x, y * scale.y));
+                output_image.set(x, y, c + layer.get(x / scale.x, y / scale.y));
             }
         }
     }
@@ -168,6 +168,8 @@ fn main()
         }
         let _ = outfile.write_fmt(format_args!("\",\n"));
     }
+
+    let _ = outfile.write_fmt(format_args!("}};"));
 
     let _ = outfile.flush();
 }
