@@ -34,8 +34,8 @@ use std::str::SplitWhitespace;
 use rand::{Rng, StdRng, SeedableRng};
 
 struct Dimension {
-    x: u16,
-    y: u16,
+    x: u32,
+    y: u32,
 }
 
 struct Layer {
@@ -44,31 +44,31 @@ struct Layer {
 }
 
 impl Layer {
-    fn checkindex(&self, x: u16, y: u16) {
+    fn checkindex(&self, x: u32, y: u32) {
         if !( x < self.size.x && y < self.size.y ) {
             panic!("Layer coordinate out of bounds ({}, {})",x,y);
         }
     }
 
-    fn get(&self, x: u16, y: u16) -> u8 {
+    fn get(&self, x: u32, y: u32) -> u8 {
         &self.checkindex(x,y);
 
         self.data[ (y * self.size.x + x) as usize ]
     }
 
-    fn set(&mut self, x: u16, y: u16, val: u8) {
+    fn set(&mut self, x: u32, y: u32, val: u8) {
         self.checkindex(x,y);
         
         self.data[ (y * self.size.x + x) as usize ] = val;
     }
 
-    fn new(x: u16, y: u16) -> Layer {
+    fn new(x: u32, y: u32) -> Layer {
         Layer {
             size: Dimension {
                 x: x,
                 y: y
             },
-            data: vec![0u8;(x*y) as usize]
+            data: vec![0u8; (x * y) as usize]
         }
     }
 }
@@ -119,14 +119,40 @@ fn main()
     let mut layers = vec![];
     for i in 0..num_layers as usize {
         layers.push(Layer::new(layer_dimensions[i].x, layer_dimensions[i].y));
-        for a in 0..layers[i].size.x {
-            for b in 0..layers[i].size.y {
-                layers[i].set(a,b,(rng.next_u32() % num_colors as u32) as u8);
+        for y in 0..layers[i].size.y {
+            for x in 0..layers[i].size.x {
+                layers[i].set(x, y, (rng.next_u32() % num_colors as u32) as u8);
             }
         }
     }
 
     let mut output_image = Layer::new(output_size.x, output_size.y);
+
+    for layer in layers {
+        let scale = Dimension {
+            x: layer.size.x / output_size.x,
+            y: layer.size.y / output_size.y
+        };
+        
+        for y in 0..output_size.y {
+            for x in 0..output_size.x {
+                let c = output_image.get(x,y);
+                output_image.set(x, y, c + layer.get(x * scale.x, y * scale.y));
+            }
+        }
+    }
+
+    for y in 0..output_size.y {
+        for x in 0..output_size.x {
+            let n = output_image.get(x, y) / num_layers;
+            output_image.set(x, y, n);
+        }
+    }
+
+    let mut outfile: File = match File::create(&args[2]){
+        Ok(file) => file,
+        Err(why) => panic!("File not found: {} - {}",&args[2],why),
+    };
 
 }
 
