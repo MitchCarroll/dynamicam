@@ -107,20 +107,20 @@ fn main()
     println!("Random Seed: {}",seed[0]);
 
     let mut layer_dimensions = vec![];
-    for _ in 0..num_layers {
+    for _ in 0 .. num_layers {
         layer_dimensions.push(read_layer_dimension(&mut split));
     }
     
     let mut colors = vec![];
-    for _ in 0..num_colors {
+    for _ in 0 .. num_colors {
         colors.push(split.next().unwrap());
     }
 
     let mut layers = vec![];
-    for i in 0..num_layers as usize {
+    for i in 0 .. num_layers as usize {
         layers.push(Layer::new(layer_dimensions[i].x, layer_dimensions[i].y));
-        for y in 0..layers[i].size.y {
-            for x in 0..layers[i].size.x {
+        for y in 0 .. layers[i].size.y {
+            for x in 0 .. layers[i].size.x {
                 layers[i].set(x, y, (rng.next_u32() % num_colors as u32) as u8);
             }
         }
@@ -134,7 +134,7 @@ fn main()
             y: layer.size.y / output_size.y
         };
         
-        for y in 0..output_size.y {
+        for y in 0 .. output_size.y {
             for x in 0..output_size.x {
                 let c = output_image.get(x,y);
                 output_image.set(x, y, c + layer.get(x * scale.x, y * scale.y));
@@ -142,8 +142,8 @@ fn main()
         }
     }
 
-    for y in 0..output_size.y {
-        for x in 0..output_size.x {
+    for y in 0 .. output_size.y {
+        for x in 0 .. output_size.x {
             let n = output_image.get(x, y) / num_layers;
             output_image.set(x, y, n);
         }
@@ -153,7 +153,23 @@ fn main()
         Ok(file) => file,
         Err(why) => panic!("File not found: {} - {}",&args[2],why),
     };
+    
+    let _ = outfile.write_fmt(format_args!("/* XPM */\n"));
+    let _ = outfile.write_fmt(format_args!("static char * camo_xpm[] = {{\n"));
+    let _ = outfile.write_fmt(format_args!("\"{} {} {} 1\",\n", output_size.x, output_size.y, num_colors));
+    for i in 0 .. num_colors {
+        let _ = outfile.write_fmt(format_args!("\"{}\tc #{}\",\n", color_code(i), colors[i as usize])); 
+    }
 
+    for y in 0 .. output_size.y {
+        let _ = outfile.write_fmt(format_args!("\""));
+        for x in 0 .. output_size.x {
+            let _ = outfile.write_fmt(format_args!("{}",color_code(output_image.get(x,y))));
+        }
+        let _ = outfile.write_fmt(format_args!("\",\n"));
+    }
+
+    let _ = outfile.flush();
 }
 
 fn check_args(args: &Vec<String>)
@@ -184,4 +200,16 @@ fn read_layer_dimension(split: &mut SplitWhitespace) -> Dimension
         x: split.next().unwrap().parse().unwrap(), 
         y: split.next().unwrap().parse().unwrap()
     }
+}
+
+fn color_code(n: u8) -> char
+{
+    let mut n = n + 32;
+    if n >= 34 { n += 1 }
+    if n >= 92 { n += 1 }
+    let c = (n as u8) as char;
+    if n > 95 || n < 32 { panic!("{} out of range for color code", n); }
+    if n == 34 || n == 92 { panic!("Color code {} produces invalid character: {}", n, c); }
+    
+    c
 }
