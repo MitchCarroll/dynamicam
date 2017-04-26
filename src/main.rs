@@ -40,7 +40,7 @@ struct Dimension {
 
 struct Layer {
     size: Dimension,
-    data: Vec<u8>,
+    data: Vec<f32>,
 }
 
 impl Layer {
@@ -50,15 +50,13 @@ impl Layer {
         }
     }
 
-    fn get(&self, x: u32, y: u32) -> u8 {
+    fn get(&self, x: u32, y: u32) -> f32 {
         &self.checkindex(x,y);
-
         self.data[ (y * self.size.x + x) as usize ]
     }
 
-    fn set(&mut self, x: u32, y: u32, val: u8) {
+    fn set(&mut self, x: u32, y: u32, val: f32) {
         self.checkindex(x,y);
-        
         self.data[ (y * self.size.x + x) as usize ] = val;
     }
 
@@ -68,7 +66,7 @@ impl Layer {
                 x: x,
                 y: y
             },
-            data: vec![0u8; (x * y) as usize]
+            data: vec![0.0f32; (x * y) as usize]
         }
     }
 }
@@ -121,7 +119,7 @@ fn main()
         layers.push(Layer::new(layer_dimensions[i].x, layer_dimensions[i].y));
         for y in 0 .. layers[i].size.y {
             for x in 0 .. layers[i].size.x {
-                layers[i].set(x, y, (rng.next_u32() % (num_colors as u32)) as u8);
+                layers[i].set(x, y, (rng.next_u32() % (num_colors as u32 + 1)) as f32 );
             }
         }
     }
@@ -144,7 +142,7 @@ fn main()
 
     for y in 0 .. output_size.y {
         for x in 0 .. output_size.x {
-            let n = output_image.get(x, y) / num_layers;
+            let n = (output_image.get(x, y) / num_layers as f32).round();
             output_image.set(x, y, n);
         }
     }
@@ -158,7 +156,7 @@ fn main()
     let _ = outfile.write_fmt(format_args!("static char * camo_xpm[] = {{\n"));
     let _ = outfile.write_fmt(format_args!("\"{} {} {} 1\",\n", output_size.x, output_size.y, num_colors));
     for i in 0 .. num_colors {
-        let _ = outfile.write_fmt(format_args!("\"{}\tc #{}\",\n", color_code(i), colors[i as usize])); 
+        let _ = outfile.write_fmt(format_args!("\"{}\tc #{}\",\n", color_code(i as f32), colors[i as usize])); 
     }
 
     for y in 0 .. output_size.y {
@@ -204,9 +202,9 @@ fn read_layer_dimension(split: &mut SplitWhitespace) -> Dimension
     }
 }
 
-fn color_code(n: u8) -> char
+fn color_code(n: f32) -> char
 {
-    let mut n = n + 32;
+    let mut n: u8 = n as u8 + 32;
     if n >= 34 { n += 1 }
     if n >= 92 { n += 1 }
     let c = (n as u8) as char;
