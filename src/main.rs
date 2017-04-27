@@ -120,7 +120,7 @@ fn main()
         layers.push(Layer::new(layer_dimensions[i].x, layer_dimensions[i].y));
         for y in 0 .. layers[i].size.y {
             for x in 0 .. layers[i].size.x {
-                layers[i].set(x, y, rng.next_f32() - 0.5); //set layer texel to a value from -0.5 to +0.5
+                layers[i].set(x, y, rng.next_f32()); //set layer texel to a value from -0.5 to +0.5
             }
         }
     }
@@ -143,7 +143,7 @@ fn main()
 
     for y in 0 .. output_size.y {
         for x in 0 .. output_size.x {
-            let n = (((output_image.get(x, y) * 2.0).abs() / num_layers as f32) * num_colors as f32).round(); //calculate pixel color
+            let n = ((output_image.get(x, y) / num_layers as f32) * num_colors as f32).round(); //calculate pixel color
             output_image.set(x, y, n);
         }
     }
