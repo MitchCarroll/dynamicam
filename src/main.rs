@@ -113,13 +113,14 @@ fn main()
     for _ in 0 .. num_colors {
         colors.push(split.next().unwrap());
     }
+    colors.sort_by(|a, b| quantify_color(a.to_lowercase()).partial_cmp(&quantify_color(b.to_lowercase())).unwrap());
 
     let mut layers = vec![];
     for i in 0 .. num_layers as usize {
         layers.push(Layer::new(layer_dimensions[i].x, layer_dimensions[i].y));
         for y in 0 .. layers[i].size.y {
             for x in 0 .. layers[i].size.x {
-                layers[i].set(x, y, (rng.next_u32() % (num_colors as u32 + 1)) as f32 );
+                layers[i].set(x, y, rng.next_f32() - 0.5); //set layer texel to a value from -0.5 to +0.5
             }
         }
     }
@@ -135,14 +136,14 @@ fn main()
         for y in 0 .. output_size.y {
             for x in 0..output_size.x {
                 let c = output_image.get(x,y);
-                output_image.set(x, y, c + layer.get(x / scale.x, y / scale.y));
+                output_image.set(x, y, c + layer.get(x / scale.x, y / scale.y)); //accumulate layer texels into output layer texel
             }
         }
     }
 
     for y in 0 .. output_size.y {
         for x in 0 .. output_size.x {
-            let n = (output_image.get(x, y) / num_layers as f32).round();
+            let n = (((output_image.get(x, y) * 2.0).abs() / num_layers as f32) * num_colors as f32).round(); //calculate pixel color
             output_image.set(x, y, n);
         }
     }
@@ -213,3 +214,12 @@ fn color_code(n: f32) -> char
     
     c
 }
+
+fn quantify_color(color: String) -> f32
+{
+    ((i32::from_str_radix(&color[0..1],16).unwrap() 
+        + i32::from_str_radix(&color[2..3],16).unwrap() 
+        + i32::from_str_radix(&color[4..5],16).unwrap()) as f32) 
+    / (i32::from_str_radix("ffffff",16).unwrap() as f32)
+}
+
