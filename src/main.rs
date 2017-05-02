@@ -160,15 +160,17 @@ fn main()
         
         for y in 0 .. output_size.y {
             for x in 0..output_size.x {
-                let c = output_image.get(x,y);
-                output_image.set(x, y, c + layer.get(x / scale.x, y / scale.y)); //accumulate layer texels into output layer texel
+                let c = output_image.get(x,y); 
+                //accumulate layer texels into output layer texel
+                output_image.set(x, y, c + layer.get(x / scale.x, y / scale.y));
             }
         }
     }
 
     for y in 0 .. output_size.y {
         for x in 0 .. output_size.x {
-            let n = ((output_image.get(x, y) / num_layers as f32) * num_colors as f32).round(); //calculate pixel color
+            let n = ((output_image.get(x, y) / num_layers as f32) 
+                     * num_colors as f32).round(); //calculate pixel color
             output_image.set(x, y, n);
         }
     }
@@ -182,18 +184,25 @@ fn main()
     //Write XPM header to output file
     let _ = outfile.write_fmt(format_args!("/* XPM */\n"));
     let _ = outfile.write_fmt(format_args!("static char * camo_xpm[] = {{\n"));
-    let _ = outfile.write_fmt(format_args!("\"{} {} {} 1\",\n", output_size.x, output_size.y, num_colors));
+    let _ = outfile.write_fmt(format_args!("\"{} {} {} 1\",\n", 
+                                           output_size.x, 
+                                           output_size.y, 
+                                           num_colors));
 
     //Write color codes to output file using color_code()
     for i in 0 .. num_colors {
-        let _ = outfile.write_fmt(format_args!("\"{}\tc #{}\",\n", color_code(i as f32), colors[i as usize])); 
+        let _ = outfile.write_fmt(format_args!("\"{}\tc #{}\",\n", 
+                                               color_code(i as f32), 
+                                               colors[i as usize])); 
     }
 
     //Write pixels to output file
     for y in 0 .. output_size.y {
         let _ = outfile.write_fmt(format_args!("\""));
         for x in 0 .. output_size.x {
-            let _ = outfile.write_fmt(format_args!("{}",color_code(output_image.get(x,y))));
+            let _ = outfile.write_fmt(format_args!("{}",
+                                                   color_code(output_image
+                                                              .get(x,y))));
         }
         let _ = outfile.write_fmt(format_args!("\",\n"));
     }
@@ -246,7 +255,9 @@ fn color_code(n: f32) -> char
     if n > 95 || n < 32 { panic!("{} out of range for color code", n); }
 
     //skip invalid characters
-    if n == 34 || n == 92 { panic!("Color code {} produces invalid character: {}", n, c); }
+    if n == 34 || n == 92 { 
+        panic!("Color code {} produces invalid character: {}", n, c); 
+    }
     
     c //return the computed character
 }
