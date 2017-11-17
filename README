@@ -17,6 +17,13 @@ adequately, provided the user takes the time to derive the proper inputs manuall
 
 Some sample input files and their corresponding outputs are given.
 
+NOTES:
+Fourier transform creates a magnitude and a phase output. reconstruction from only the magnitude image creates an
+image with the same spatial frequencies, but distributed evenly, ending up in a corrupted image. This may be a valid way
+to create the noise patterns for this program, especially if the fourier transforms are restricted to certain groups of
+colors. Filtering may be a way to simplify the colors, and combining transforms of multiple input images may be the
+solution to getting a more generalized pattern for multiple environments or conditions.
+
 TODO:
 Add better command line parsing
 Add better color gradient generation
