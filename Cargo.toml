@@ -4,4 +4,5 @@ version = "0.1.0"
 authors = ["C. Mitch Carroll <c.mitch.carroll@gmail.com>"]
 
 [dependencies]
-rand = "0.3.15"
+rand = "0.3.18"
+magick_rust = "0.7.0"
