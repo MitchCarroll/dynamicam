@@ -24,18 +24,19 @@ do
 	rm $i
 done
 
-rm *-fft-1.png
-
-convert -size 256x256 xc:#808080 grey.png
+# convert -size 256x256 xc:#808080 grey.png
 
 convert *-fft-0.png -evaluate-sequence mean fft-0-mean.png
 rm *-fft-0.png
 
-convert fft-0-mean.png grey.png -ift mean-ift-0.png
-rm fft-0-mean.png
+convert *-fft-1.png -evaluate-sequence mean fft-1-mean.png
+rm *-fft-1.png
 
-convert mean-ift-0.png -colors 5 -quantize YUV -dither Riemersma camo-out.png
-rm mean-ift-0.png
-rm grey.png
+convert fft-0-mean.png fft-1-mean.png -ift ift.png
+rm fft-?-mean.png
+
+convert ift.png -colors 5 -quantize YUV -dither Riemersma camo.png
+rm ift.png 
+# rm grey.png
 
 echo "DONE"
