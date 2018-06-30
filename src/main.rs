@@ -154,8 +154,8 @@ fn main()
 
     for layer in layers {
         let scale = Dimension {
-            x: output_size.x / layer.size.x,
-            y: output_size.y / layer.size.y
+            x: (output_size.x / layer.size.x) + 1,
+            y: (output_size.y / layer.size.y) + 1
         };
         
         for y in 0 .. output_size.y {

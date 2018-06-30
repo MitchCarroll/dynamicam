@@ -1,4 +1,10 @@
 #!/bin/bash
+if ! which convert > /dev/null
+then
+	echo "Please install ImageMagick, and try again."
+	exit -1
+fi
+
 if [ ! -d camo-output ];
 then
 	mkdir camo-output
@@ -19,12 +25,12 @@ done
 cd camo-output
 for i in *.png
 do
-	convert $i -resize 256x256 -quality 100 -gravity center $i
+	convert $i -alpha off -resize 1024x1024 -quality 100 -gravity center $i
 	convert $i -fft ${i%.*}-fft.png
 	rm $i
 done
 
-# convert -size 256x256 xc:#808080 grey.png
+ convert -size 256x256 xc:#808080 grey.png
 
 convert *-fft-0.png -evaluate-sequence mean fft-0-mean.png
 rm *-fft-0.png
@@ -35,8 +41,8 @@ rm *-fft-1.png
 convert fft-0-mean.png fft-1-mean.png -ift ift.png
 rm fft-?-mean.png
 
-convert ift.png -colors 5 -quantize YUV -dither Riemersma camo.png
+convert ift.png -colors 4 -quantize OHTA -dither Riemersma camo.png
 rm ift.png 
-# rm grey.png
+ rm grey.png
 
 echo "DONE"
