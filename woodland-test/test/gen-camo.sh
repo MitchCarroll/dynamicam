@@ -35,9 +35,12 @@ echo "converting files to 1024x1024 PNG files, and running FFT"
 for i in *.*
 do
 	echo $i
+	echo "resizing..."
 	convert $i -alpha off -resize 1024x1024 -quality 100 -gravity center \
 		${i%.*}-conv.png
 	rm $i
+
+	echo "running FFT..."
 	convert ${i%.*}-conv.png -fft ${i%.*}-fft.png
 	rm ${i%.*}-conv.png
 done
@@ -47,33 +50,58 @@ echo "generating average of FFT-0 images"
 convert *-fft-0.png -evaluate-sequence mean fft-0-mean.png
 rm *-fft-0.png
 
-echo "generating average of FFT-1 images"
-convert *-fft-1.png -evaluate-sequence mean fft-1-mean.png
-rm *-fft-1.png
-
 echo "creating grey image"
 convert -size 1024x1024 xc:#808080 grey.png
 
-echo "creating circle masks, applying them to FFTs, and running IFT"
-for i in `seq 0 1 24`
-do
-	echo $i
-	convert -size 1024x1024 xc:black -fill xc:white +antialias \
-		-draw "circle 512,512 512,$[512+i]" circle-$i.png
-#		-draw "point 512,512" -blur 0x$i -contrast-stretch 0 circle-$i.png
-	convert fft-0-mean.png circle-$i.png -compose Multiply -composite \
-		fft-0-circle-$i.png
-	convert fft-1-mean.png circle-$i.png -compose Multiply -composite \
-		fft-1-circle-$i.png
+echo "creating mask"
+convert -size 1024x1024 xc:white -fill none -stroke xc:black +antialias \
+	-strokewidth 1 -draw "circle 512,512 512,1024" circle.png
 
-	rm circle-$i.png
+echo "applying mask"
+convert fft-0-mean.png circle.png -compose Multiply -composite fft-0-mean.png
+# convert grey.png circle.png -compose Multiply -composite fft-0-mean.png
+
+rm circle.png
+
+# echo "generating average of FFT-1 images"
+# convert *-fft-1.png -evaluate-sequence mean fft-1-mean.png
+# rm *-fft-1.png
+
+echo "creating perlin layers"
+for o in `seq 2 8`
+do
+	export i=$[2**$o]
+	echo "$i"x"$i"
+#	convert -size 1024x1024 xc:black -fill xc:white +antialias \
+#		-draw "circle 512,512 512,$[512+i]" circle-$i.png
+#		-draw "point 512,512" -blur 0x$i -contrast-stretch 0 circle-$i.png
+#	convert fft-0-mean.png circle-$i.png -compose Multiply -composite \
+#		fft-0-circle-$i.png
+#	convert fft-1-mean.png circle-$i.png -compose Multiply -composite \
+#		fft-1-circle-$i.png
+
+#	rm circle-$i.png
+	
+	cp fft-0-mean.png fft-0-circle-$i.png
+
+	echo "running IFT..."
 	convert fft-0-circle-$i.png grey.png -ift ift-0-$i.png
 	# convert grey.png fft-1-circle-$i.png -ift ift-1-$i.png
 	# convert fft-0-circle-$i.png fft-1-circle-$i.png -ift ift-$i.png
 	rm fft-?-circle-$i.png
-	convert ift-0-$i.png -colors 4 -quantize OHTA -dither Riemersma \
+
+	echo "scaling down..."
+	convert ift-0-$i.png -resize "$i"x"$i" -quality 100 -gravity center \
+		ift-0-$i.png
+
+	echo "scaline up..."
+	convert ift-0-$i.png -scale 1024x1024 ift-0-$i.png
+
+	echo "dithering colors..."
+	convert ift-0-$i.png +dither -colors 4 -quantize OHTA -dither None \
 		ift-0-$i-dither.png
 done
+unset i
 
 echo "cleaning up grey image"
 rm grey.png
