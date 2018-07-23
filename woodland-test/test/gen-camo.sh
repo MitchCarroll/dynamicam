@@ -94,11 +94,11 @@ do
 	convert ift-0-$i.png -resize "$i"x"$i" -quality 100 -gravity center \
 		ift-0-$i.png
 
-	echo "scaline up..."
+	echo "scaling up..."
 	convert ift-0-$i.png -scale 1024x1024 ift-0-$i.png
 
 	echo "dithering colors..."
-	convert ift-0-$i.png +dither -colors 4 -quantize OHTA -dither None \
+	convert ift-0-$i.png +dither -colors 4 -quantize OHTA \
 		ift-0-$i-dither.png
 done
 unset i
@@ -108,11 +108,12 @@ rm grey.png
 
 echo "averaging IFT images"
 convert ift-0-*.png -evaluate-sequence mean ift.png
-convert ift-0-*-dither.png -evaluate-sequence mean ift-dither.png
+# convert ift-0-*-dither.png -evaluate-sequence mean ift-dither.png
 
 echo "dithering colors"
-convert ift.png -colors 4 -quantize OHTA -dither Riemersma camo.png
-convert ift-dither.png -colors 4 -quantize OHTA -dither Riemersma camo-dither.png
+convert ift.png -colors 4 -quantize OHTA -dither none camo.png
+# convert ift.png -colors 4 -quantize OHTA -dither Riemersma camo.png
+# convert ift-dither.png -colors 4 -quantize OHTA -dither Riemersma camo-dither.png
 # rm ift.png
 
 echo "DONE"

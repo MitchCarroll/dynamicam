@@ -1,0 +1,29 @@
+Dynamicam is a program (and the resulting output) that dynamically creates a digital camouflage pattern based on analysis of spatial frequencies and colors in
+a set of input images
+
+NOTE: A complete rewrite is currently in progress. The new version uses Fourier transforms to determine the spatial frequencies and colors to be used, and inverse transforms to render the result into a pattern. 
+
+Currently, the user defines the desired size, 
+number of colors, the hexidecimal value for the desired colors, and the 
+number of 'layers' the dimensions of each layer in the pattern, and a random 'seed'.
+The end result is a customized camoflage pattern that is composed of blocks of
+color, each of which is composed of smaller blocks of color, and so forth.
+The color transitions smoothly from block to block, and the resulting pattern
+is tilable (as long as the layers are all powers of 2 in dimension).
+
+A goal of this project is to develop an automated process for analysing the colors, 
+and spatial frequencies of a set of photos, and determining the optimal input parameters for
+the generation algorithm, as well as to develop better fractal algorithms to give better 
+concealment than a simple 'soft noise' algorithm, although the current algorithm seems to perform 
+adequately, provided the user takes the time to derive the proper inputs manually.
+
+Some sample input files and their corresponding outputs are given.
+
+TODO:
+Add better command line parsing
+Add better color gradient generation
+    Color output should be a gradient of colors including solids, and dithers
+Add better image outputs (e.g.: JPG, PNG, etc.)
+Incorporate default power-of-two layers implicitly.
+Better input file format with comment rejection, and tagged data fields. Probably a version number too.
+
