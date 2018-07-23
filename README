@@ -1,0 +1,7 @@
+DynamiCam is a program for generating digital camouflage patterns. DynamiCam is also the name of the family of patterns generated.
+
+Currently, this program is a BASH script that uses ImageMagick to perform Fourier transforms on a set of source images, manipulates the resulting transformed images, and applies an inverse transform, dithering colors, and remapping to an optimized pallet to generate a camouflage pattern.
+The resulting pattern should match the spatial frequencies of the input images, as well as provide a good match to the colors, based on a perceptual model, at a variety of viewing distances.
+The use of a similar method to the Perlin Noise algorithm ensures a tilable pattern that does not exhibit isoluminance at any viewing distance, while the radial symmetry of the spatial frequency map helps create a smooth sinusoidal transition between color patterns at any angle.
+
+work is still in progress on the basic method, as well as some of the more theoreticl issues and practical concerns, such as NIR concealability for tactical and hunting use.
