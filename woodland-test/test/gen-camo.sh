@@ -37,83 +37,64 @@ do
 	echo $i
 	echo "resizing..."
 	convert $i -alpha off -resize 1024x1024 -quality 100 -gravity center \
-		${i%.*}-conv.png
+		-extent 1024x1024 ${i%.*}-square.png
 	rm $i
 
 	echo "running FFT..."
-	convert ${i%.*}-conv.png -fft ${i%.*}-fft.png
-	rm ${i%.*}-conv.png
+	convert ${i%.*}-square.png -fft ${i%.*}-fft.png
+	rm ${i%.*}-square.png
 done
 
-# rm *fft-1.png
 echo "generating average of FFT-0 images"
 convert *-fft-0.png -evaluate-sequence mean fft-0-mean.png
 rm *-fft-0.png
 
-echo "creating grey image"
-convert -size 1024x1024 xc:#808080 grey.png
+echo "generating average of FFT-1 images"
+convert *-fft-1.png -evaluate-sequence mean fft-1-mean.png
+rm *-fft-1.png
 
-echo "creating mask"
-convert -size 1024x1024 xc:white -fill none -stroke xc:black +antialias \
-	-strokewidth 1 -draw "circle 512,512 512,1024" circle.png
-
-echo "applying mask"
-convert fft-0-mean.png circle.png -compose Multiply -composite fft-0-mean.png
-# convert grey.png circle.png -compose Multiply -composite fft-0-mean.png
-
-rm circle.png
-
-# echo "generating average of FFT-1 images"
-# convert *-fft-1.png -evaluate-sequence mean fft-1-mean.png
-# rm *-fft-1.png
-
-echo "creating perlin layers"
-for o in `seq 2 8`
-do
-	export i=$[2**$o]
-	echo "$i"x"$i"
-#	convert -size 1024x1024 xc:black -fill xc:white +antialias \
-#		-draw "circle 512,512 512,$[512+i]" circle-$i.png
-#		-draw "point 512,512" -blur 0x$i -contrast-stretch 0 circle-$i.png
-#	convert fft-0-mean.png circle-$i.png -compose Multiply -composite \
-#		fft-0-circle-$i.png
-#	convert fft-1-mean.png circle-$i.png -compose Multiply -composite \
-#		fft-1-circle-$i.png
-
-#	rm circle-$i.png
-	
-	cp fft-0-mean.png fft-0-circle-$i.png
-
-	echo "running IFT..."
-	convert fft-0-circle-$i.png grey.png -ift ift-0-$i.png
-	# convert grey.png fft-1-circle-$i.png -ift ift-1-$i.png
-	# convert fft-0-circle-$i.png fft-1-circle-$i.png -ift ift-$i.png
-	rm fft-?-circle-$i.png
-
-	echo "scaling down..."
-	convert ift-0-$i.png -resize "$i"x"$i" -quality 100 -gravity center \
-		ift-0-$i.png
-
-	echo "scaling up..."
-	convert ift-0-$i.png -scale 1024x1024 ift-0-$i.png
-
-	echo "dithering colors..."
-	convert ift-0-$i.png +dither -colors 4 -quantize OHTA \
-		ift-0-$i-dither.png
+echo "creating masks"
+for i in 2 4 8 16 32; do
+	convert -size 1024x1024 xc:black -fill xc:white +antialias \
+		-draw "circle 512,512 512,$[512+i]" circle-"$i".png
 done
-unset i
 
-echo "cleaning up grey image"
-rm grey.png
+echo "applying masks"
+for i in 2 4 8 16 32; do
+	convert fft-0-mean.png circle-"$i".png \
+		-compose Multiply -composite \
+		fft-0-mask-"$i".png
+	
+	convert fft-1-mean.png circle-"$i".png \
+		-compose Multiply -composite \
+		fft-1-mask-"$i".png
+done
 
-echo "averaging IFT images"
-convert ift-0-*.png -evaluate-sequence mean ift.png
-# convert ift-0-*-dither.png -evaluate-sequence mean ift-dither.png
+echo "removing masks"
+rm circle-*.png
+rm fft-?-mean.png
 
-echo "dithering colors"
-convert ift.png -colors 4 -quantize OHTA -dither none camo.png
-# convert ift.png -colors 4 -quantize OHTA -dither Riemersma camo.png
-# convert ift-dither.png -colors 4 -quantize OHTA -dither Riemersma camo-dither.png
-# rm ift.png
+echo "running inverse transforms"
+for i in 2 4 8 16 32; do
+	convert fft-0-mask-"$i".png fft-1-mask-"$i".png \
+		-ift ift-"$i".png
+	rm fft-0-mask-"$i".png
+	rm fft-1-mask-"$i".png
+done
+
+echo "generating Perlin layers"
+for i in 2 4 8 16 32; do
+	convert ift-"$i".png -resize "$[i*i]"x"$[i*i]" layer-"$i".png
+	convert layer-"$i".png -scale 1024x1024 layer-"$i".png
+	rm ift-"$i".png
+done
+
+echo "averaging Perlin layers"
+convert layer-*.png -evaluate-sequence mean pattern.png
+rm layer-*.png
+
+echo "quantizing colors"
+convert pattern.png -colors 4 -quantize OHTA -dither Riemersma camo.png
+rm pattern.png
 
 echo "DONE"
