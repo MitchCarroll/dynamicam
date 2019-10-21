@@ -105,7 +105,7 @@ rm layer-*.png
 
 echo "quantizing colors"
 convert pattern.png \
-	-colors 6 \
+	-colors 4 \
 	-dither FloydSteinberg \
 	-quantize sRGB \
 	camo.png
