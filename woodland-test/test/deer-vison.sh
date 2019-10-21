@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for f in *.png;
+for f in $@;
 do 
 #	convert -monitor $f -strip -depth 32 -colorspace sRGB \
 #		-color-matrix  '1.0 	 0.0 	0.0 
